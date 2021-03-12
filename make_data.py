@@ -3,24 +3,13 @@ from bs4 import BeautifulSoup as Soup
 
 
 def set_label(soups,label):
+    #Takes a list of soups and sets the lable
     for soup in soups:
         soup.label = label
 
 
-
-
-test_urls = [
-    "https://www.theguardian.com/media/newspapers",
-    "https://www.spiegel.de/",
-    "https://www.handelsblatt.com/?navi=HOME_21148818",
-    "https://www.faz.net/aktuell/"
-]
-
-
-labled = []
-
-
 def find_and_label(url,query_labels):
+    #Gets HTML and uses the lable selector pairs to lable the soups
     soup = Soup(requests.get(url).content,"lxml").find("body")
     
     for (label,selector) in query_labels:
@@ -28,6 +17,7 @@ def find_and_label(url,query_labels):
         set_label(soups,label)
     return soup
 
+#All the test websites with selectors to lable the "soups"
 labels = [
     ("https://www.rhein-zeitung.de/sport/fussball-regional/fussballverband-rheinland/fussball-rheinlandliga.html",[
         ["article","article"],
@@ -75,10 +65,13 @@ labels = [
         ]),
 ]
 
-soups = []
 
-for l in labels:
+def get_all_data():
+    #Iterates over the links, sets the lables and returns everything 
+    soups = []
 
-    soups+= (find_and_label(*l)).find_all()
+    for l in labels:
 
-pass
+        soups.append(find_and_label(*l))
+
+    return soups

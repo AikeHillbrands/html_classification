@@ -1,5 +1,9 @@
+
+
 from bs4 import BeautifulSoup as Soup
 import requests
+from make_data import get_all_data
+import pandas as pd
 
 def add_dicts(dict1,dict2):
     res = {}
@@ -62,23 +66,18 @@ def set_label(soups,label):
 
 
 
-test_urls = [
-    "https://www.nytimes.com/",
-    "https://www.rhein-zeitung.de/sport/fussball-regional/fussballverband-rheinland/fussball-rheinlandliga.html",
-    "https://www.theguardian.com/media/newspapers",
-    "https://www.spiegel.de/",
-    "https://www.handelsblatt.com/?navi=HOME_21148818",
-    "https://www.faz.net/aktuell/"
 
-]
-results = []
-for url in test_urls:
+soups = get_all_data()
 
-    soup = Soup(requests.get(url),"lxml").find("body")
+labeled_and_classified  =[]
 
+for soup in soups:
     propergate_embeddings(soup)
 
+    labeled_and_classified += soup.find_all()
 
-    results += [(s.label,s.embeddings) for s in soup.find_all()]
-    pass
+df = pd.DataFrame([s.embedding for s in soups])
 
+df["label"] = [s.label for s in soups]
+
+pass
